@@ -79,6 +79,11 @@ export class UserResolver {
         errors: validationCheck,
       };
     }
+    if (await User.findOne({ where: { email: userInput.email } })) {
+      return {
+        errors: [{ field: "email", error: "This email is already taken." }],
+      };
+    }
 
     //hashing the user password before saving it
     const hashedPass = await argon2.hash(userInput.password);

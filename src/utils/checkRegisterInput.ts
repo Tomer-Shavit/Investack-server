@@ -1,19 +1,12 @@
 import { PASSWORD_RESPONSES } from "../constants";
-import { UserInput, FieldErrors } from "../resolvers/user";
+import { UserLoginInput, FieldErrors } from "../resolvers/user";
 import { passwordValidation } from "./passwordValidatior";
 
 export const checkRegisterInput = ({
-  loginInput: { email, password },
-  username,
-}: UserInput): FieldErrors[] | null => {
-  if (username.length < 3) {
-    return [
-      {
-        field: "username",
-        error: "Username is too short",
-      },
-    ];
-  } else if (!email.includes("@")) {
+  email,
+  password,
+}: UserLoginInput): FieldErrors[] | null => {
+  if (!email.includes("@")) {
     return [
       {
         field: "email",

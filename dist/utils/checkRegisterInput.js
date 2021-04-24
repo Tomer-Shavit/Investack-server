@@ -3,16 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkRegisterInput = void 0;
 const constants_1 = require("../constants");
 const passwordValidatior_1 = require("./passwordValidatior");
-const checkRegisterInput = ({ loginInput: { email, password }, username, }) => {
-    if (username.length < 3) {
-        return [
-            {
-                field: "username",
-                error: "Username is too short",
-            },
-        ];
-    }
-    else if (!email.includes("@")) {
+const checkRegisterInput = ({ email, password, }) => {
+    if (!email.includes("@")) {
         return [
             {
                 field: "email",

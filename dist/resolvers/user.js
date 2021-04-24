@@ -98,6 +98,11 @@ let UserResolver = class UserResolver {
                     errors: validationCheck,
                 };
             }
+            if (yield User_1.default.findOne({ where: { email: userInput.email } })) {
+                return {
+                    errors: [{ field: "email", error: "This email is already taken." }],
+                };
+            }
             const hashedPass = yield argon2_1.default.hash(userInput.password);
             try {
                 const result = yield typeorm_1.getConnection()
