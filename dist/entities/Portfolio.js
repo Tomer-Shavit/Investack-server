@@ -14,42 +14,54 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
-const Portfolio_1 = __importDefault(require("./Portfolio"));
-let User = class User extends typeorm_1.BaseEntity {
+const User_1 = __importDefault(require("./User"));
+const Crypto_1 = require("./Crypto");
+const Stocks_1 = require("./Stocks");
+let Portfolio = class Portfolio extends typeorm_1.BaseEntity {
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn(),
     type_graphql_1.Field(),
     __metadata("design:type", Number)
-], User.prototype, "id", void 0);
-__decorate([
-    typeorm_1.Column({ unique: true }),
-    type_graphql_1.Field(),
-    __metadata("design:type", String)
-], User.prototype, "email", void 0);
+], Portfolio.prototype, "id", void 0);
 __decorate([
     typeorm_1.Column(),
-    __metadata("design:type", String)
-], User.prototype, "password", void 0);
+    type_graphql_1.Field(),
+    __metadata("design:type", Number)
+], Portfolio.prototype, "userId", void 0);
 __decorate([
-    typeorm_1.OneToOne(() => Portfolio_1.default, (portfolio) => portfolio.user),
-    typeorm_1.JoinColumn(),
-    type_graphql_1.Field(() => Portfolio_1.default),
-    __metadata("design:type", Portfolio_1.default)
-], User.prototype, "portfolio", void 0);
+    typeorm_1.Column("simple-array"),
+    type_graphql_1.Field(() => [Stocks_1.Stocks]),
+    __metadata("design:type", Array)
+], Portfolio.prototype, "stocks", void 0);
+__decorate([
+    typeorm_1.Column("simple-array"),
+    type_graphql_1.Field(() => [Crypto_1.Crypto]),
+    __metadata("design:type", Array)
+], Portfolio.prototype, "crypto", void 0);
+__decorate([
+    typeorm_1.OneToOne(() => User_1.default, (user) => user.portfolio),
+    type_graphql_1.Field(() => User_1.default),
+    __metadata("design:type", User_1.default)
+], Portfolio.prototype, "user", void 0);
+__decorate([
+    typeorm_1.Column(),
+    type_graphql_1.Field(() => Number),
+    __metadata("design:type", Number)
+], Portfolio.prototype, "value", void 0);
 __decorate([
     typeorm_1.CreateDateColumn(),
     type_graphql_1.Field(() => String),
     __metadata("design:type", Date)
-], User.prototype, "createdAt", void 0);
+], Portfolio.prototype, "createdAt", void 0);
 __decorate([
     typeorm_1.UpdateDateColumn(),
     type_graphql_1.Field(() => String),
     __metadata("design:type", Date)
-], User.prototype, "updatedAt", void 0);
-User = __decorate([
-    type_graphql_1.ObjectType(),
-    typeorm_1.Entity()
-], User);
-exports.default = User;
-//# sourceMappingURL=User.js.map
+], Portfolio.prototype, "updatedAt", void 0);
+Portfolio = __decorate([
+    typeorm_1.Entity(),
+    type_graphql_1.ObjectType()
+], Portfolio);
+exports.default = Portfolio;
+//# sourceMappingURL=Portfolio.js.map

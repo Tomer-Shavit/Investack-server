@@ -25,6 +25,8 @@ const ioredis_1 = __importDefault(require("ioredis"));
 const express_session_1 = __importDefault(require("express-session"));
 const connect_redis_1 = __importDefault(require("connect-redis"));
 const cors_1 = __importDefault(require("cors"));
+const Portfolio_1 = __importDefault(require("./entities/Portfolio"));
+const portfolio_1 = require("./resolvers/portfolio");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     yield typeorm_1.createConnection({
         type: "postgres",
@@ -34,7 +36,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         database: "portfolio2chart",
         synchronize: true,
         logging: !constants_1.__prod__,
-        entities: [User_1.default],
+        entities: [User_1.default, Portfolio_1.default],
         migrations: [path_1.default.join(__dirname + "/migrations/*")],
     });
     const app = express_1.default();
@@ -61,7 +63,10 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         }),
     }));
     const apolloServer = new apollo_server_express_1.ApolloServer({
-        schema: yield type_graphql_1.buildSchema({ resolvers: [user_1.UserResolver], validate: true }),
+        schema: yield type_graphql_1.buildSchema({
+            resolvers: [user_1.UserResolver, portfolio_1.PortfolioResolver],
+            validate: true,
+        }),
         context: ({ req, res }) => ({ req, res, redis }),
     });
     apolloServer.applyMiddleware({ app, cors: false });

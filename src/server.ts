@@ -12,6 +12,8 @@ import session from "express-session";
 import connectRedis from "connect-redis";
 import { myContext } from "./types";
 import cors from "cors";
+import Portfolio from "./entities/Portfolio";
+import { PortfolioResolver } from "./resolvers/portfolio";
 
 //Because we need to await things we use this async main function and call it at the bottom
 const main = async () => {
@@ -24,7 +26,7 @@ const main = async () => {
     database: "portfolio2chart",
     synchronize: true,
     logging: !__prod__,
-    entities: [User],
+    entities: [User, Portfolio],
     migrations: [path.join(__dirname + "/migrations/*")],
   });
 
@@ -62,7 +64,10 @@ const main = async () => {
 
   //Creating an apollo server, this creates the graphql playground and let us use the resolvers
   const apolloServer = new ApolloServer({
-    schema: await buildSchema({ resolvers: [UserResolver], validate: true }),
+    schema: await buildSchema({
+      resolvers: [UserResolver, PortfolioResolver],
+      validate: true,
+    }),
     context: ({ req, res }): myContext => ({ req, res, redis }),
   });
 

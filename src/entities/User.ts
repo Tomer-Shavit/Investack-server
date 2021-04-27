@@ -4,9 +4,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import Portfolio from "./Portfolio";
 
 // This entity is doing 2 things, declare the typeDefs for graphql (using type-graphql)
 // And also creates the table in our data base using typeORM
@@ -24,6 +27,11 @@ class User extends BaseEntity {
 
   @Column()
   password: string;
+
+  @OneToOne(() => Portfolio, (portfolio) => portfolio.user) // specify inverse side as a second parameter
+  @JoinColumn()
+  @Field(() => Portfolio)
+  portfolio: Portfolio;
 
   @CreateDateColumn()
   @Field(() => String)
