@@ -15,8 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
 const User_1 = __importDefault(require("./User"));
-const Crypto_1 = require("./Crypto");
-const Stocks_1 = require("./Stocks");
+const Stock_1 = __importDefault(require("./Stock"));
 let Portfolio = class Portfolio extends typeorm_1.BaseEntity {
 };
 __decorate([
@@ -30,22 +29,22 @@ __decorate([
     __metadata("design:type", Number)
 ], Portfolio.prototype, "userId", void 0);
 __decorate([
-    typeorm_1.Column("simple-array"),
-    type_graphql_1.Field(() => [Stocks_1.Stocks]),
+    typeorm_1.Column("simple-array", { default: [] }),
+    typeorm_1.OneToMany(() => Stock_1.default, (stock) => stock.portfolio),
     __metadata("design:type", Array)
 ], Portfolio.prototype, "stocks", void 0);
 __decorate([
-    typeorm_1.Column("simple-array"),
-    type_graphql_1.Field(() => [Crypto_1.Crypto]),
+    typeorm_1.Column("simple-array", { default: [] }),
     __metadata("design:type", Array)
 ], Portfolio.prototype, "crypto", void 0);
 __decorate([
     typeorm_1.OneToOne(() => User_1.default, (user) => user.portfolio),
     type_graphql_1.Field(() => User_1.default),
+    typeorm_1.JoinColumn({ name: "userId" }),
     __metadata("design:type", User_1.default)
 ], Portfolio.prototype, "user", void 0);
 __decorate([
-    typeorm_1.Column(),
+    typeorm_1.Column({ default: 0 }),
     type_graphql_1.Field(() => Number),
     __metadata("design:type", Number)
 ], Portfolio.prototype, "value", void 0);

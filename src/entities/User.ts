@@ -4,7 +4,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -29,8 +28,7 @@ class User extends BaseEntity {
   password: string;
 
   @OneToOne(() => Portfolio, (portfolio) => portfolio.user) // specify inverse side as a second parameter
-  @JoinColumn()
-  @Field(() => Portfolio)
+  @Field(() => Portfolio, { nullable: true })
   portfolio: Portfolio;
 
   @CreateDateColumn()

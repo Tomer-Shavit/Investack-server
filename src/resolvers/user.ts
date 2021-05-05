@@ -1,4 +1,4 @@
-import { myContext } from "src/types";
+import { myContext } from "../types";
 import {
   Arg,
   Mutation,
@@ -15,6 +15,7 @@ import "../customTypes/session/index";
 import { checkRegisterInput } from "../utils/checkRegisterInput";
 import argon2 from "argon2";
 import { COOKIE_NAME } from "../constants";
+import Portfolio from "../entities/Portfolio";
 
 declare module "express-session" {
   interface SessionData {
@@ -71,7 +72,6 @@ export class UserResolver {
     @Arg("userInput") userInput: UserLoginInput,
     @Ctx() { req }: myContext
   ): Promise<UserResponse | null> {
-    //TODO add validation to the fields
     const validationCheck = checkRegisterInput(userInput);
 
     if (validationCheck) {
@@ -89,7 +89,7 @@ export class UserResolver {
     const hashedPass = await argon2.hash(userInput.password);
 
     try {
-      const result = await getConnection()
+      const userResult = await getConnection()
         .createQueryBuilder()
         .insert()
         .into(User)
@@ -99,10 +99,33 @@ export class UserResolver {
         })
         .returning("*")
         .execute();
-      const user: User = result.raw[0];
+
+      let user: User = userResult.raw[0];
+
+      // Creating a portfolio for the user
+      const portoRes = await getConnection()
+        .createQueryBuilder()
+        .insert()
+        .into(Portfolio)
+        .values({
+          user,
+          value: 0,
+          userId: user.id,
+          stocks: [],
+          crypto: [],
+        })
+        .returning("*")
+        .execute();
+
+      const portfolio: Portfolio = portoRes.raw[0];
+
+      console.log("portfolio: ", portfolio);
+
+      console.log("user: ", user);
+
       //save the user id in the session (redis store)
       req.session.userId = user.id;
-      console.log("user: ", user);
+
       return {
         user,
       };

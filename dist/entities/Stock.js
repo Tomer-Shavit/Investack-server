@@ -12,12 +12,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Stock = void 0;
 const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
 const Portfolio_1 = __importDefault(require("./Portfolio"));
-let Stock = class Stock {
+let Stock = class Stock extends typeorm_1.BaseEntity {
 };
+__decorate([
+    typeorm_1.PrimaryGeneratedColumn(),
+    __metadata("design:type", Number)
+], Stock.prototype, "id", void 0);
 __decorate([
     typeorm_1.Column(),
     type_graphql_1.Field(),
@@ -29,12 +32,18 @@ __decorate([
     __metadata("design:type", Number)
 ], Stock.prototype, "shares", void 0);
 __decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], Stock.prototype, "portfolioId", void 0);
+__decorate([
     typeorm_1.ManyToOne(() => Portfolio_1.default, (portfolio) => portfolio.stocks),
+    typeorm_1.JoinColumn({ name: "portfolioId" }),
     __metadata("design:type", Portfolio_1.default)
 ], Stock.prototype, "portfolio", void 0);
 Stock = __decorate([
     type_graphql_1.ObjectType(),
-    type_graphql_1.InputType("stocksInput")
+    type_graphql_1.InputType("stocksInput"),
+    typeorm_1.Entity()
 ], Stock);
-exports.Stock = Stock;
-//# sourceMappingURL=Stocks.js.map
+exports.default = Stock;
+//# sourceMappingURL=Stock.js.map

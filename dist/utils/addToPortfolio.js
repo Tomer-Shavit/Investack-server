@@ -17,6 +17,7 @@ const Portfolio_1 = __importDefault(require("../entities/Portfolio"));
 const addToPortfolio = (req, type, chosenCrypto, chosenStocks) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.session;
     const portfolio = yield Portfolio_1.default.findOne({ where: { userId } });
+    console.log("portfolio1: ", portfolio);
     if (!portfolio) {
     }
     else if (type === "crypto" && chosenCrypto) {

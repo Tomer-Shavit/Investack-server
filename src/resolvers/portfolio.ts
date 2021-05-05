@@ -1,47 +1,51 @@
+import Stock from "../entities/Stock";
+import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import Portfolio from "../entities/Portfolio";
-import { Stocks } from "../entities/Stocks";
-import isAuth from "../middlewares/isAuth";
 import { myContext } from "../types";
-import { addToPortfolio } from "../utils/addToPortfolio";
-import {
-  Arg,
-  Ctx,
-  Field,
-  InputType,
-  Mutation,
-  Query,
-  Resolver,
-  UseMiddleware,
-} from "type-graphql";
-
-@InputType()
-export class ChosenStocks {
-  @Field()
-  stocks: Stocks[];
-}
-@InputType()
-export class ChosenCrypto {
-  crypto: Crypto[];
-}
+import { getConnection } from "typeorm";
 
 @Resolver(() => Portfolio)
 export class PortfolioResolver {
-  @Query(() => Portfolio)
-  async portfolio(@Ctx() { req }: myContext): Promise<Portfolio | undefined> {
+  @Query(() => Portfolio, { nullable: true })
+  async myPortfolio(@Ctx() { req }: myContext): Promise<Portfolio | undefined> {
     const { userId } = req.session;
     const portfolio = await Portfolio.findOne({ where: { userId } });
     return portfolio;
   }
 
-  @Mutation(() => Portfolio)
-  @UseMiddleware(isAuth)
+  @Mutation(() => Boolean)
   async addStocks(
     @Ctx() { req }: myContext,
-    @Arg("stocks", () => ChosenStocks) stocks: ChosenStocks
-  ): Promise<Portfolio | undefined> {
+    @Arg("stocksInput", () => [Stock]) stocksInput: Stock[]
+  ): Promise<Boolean> {
     const { userId } = req.session;
-    addToPortfolio(req, chosenStocks: stocks, "crypto");
-    const portfolio = await Portfolio.findOne({ where: { userId } });
-    return portfolio;
+    const portfolio = await Portfolio.findOne(
+      { userId },
+      { relations: ["stocks"] }
+    );
+
+    // await getConnection()
+    //   .createQueryBuilder()
+    //   .relation(Portfolio, "stocks")
+    //   .of({ userId })
+    //   .add(stocksInput);
+
+    // const stock = new Stock();
+    // const stocksSymbols = portfolio?.stocks.map(stock => stock.symbol)
+    // await getConnection().createQueryBuilder().
+
+    // for (let i = 0; i < stocksInput.length; i++) {
+    //   if(portfolio!.stocks.includes(stocksInput[i].symbol)){
+    //     await Stock.update()
+    //   }
+    //   fetchedStock.symbol = stocksInput[i].symbol;
+    //   fetchedStock.shares = stocksInput[i].shares;
+    //   fetchedStock.portfolioId = portfolio!.id;
+    //   await Stock.create(fetchedStock).save();
+    // }
+
+    console.log("portfolio: ", portfolio);
+
+    return true;
   }
 }

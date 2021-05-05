@@ -16,7 +16,6 @@ require("reflect-metadata");
 const typeorm_1 = require("typeorm");
 const path_1 = __importDefault(require("path"));
 const constants_1 = require("./constants");
-const User_1 = __importDefault(require("./entities/User"));
 const express_1 = __importDefault(require("express"));
 const apollo_server_express_1 = require("apollo-server-express");
 const type_graphql_1 = require("type-graphql");
@@ -25,18 +24,20 @@ const ioredis_1 = __importDefault(require("ioredis"));
 const express_session_1 = __importDefault(require("express-session"));
 const connect_redis_1 = __importDefault(require("connect-redis"));
 const cors_1 = __importDefault(require("cors"));
-const Portfolio_1 = __importDefault(require("./entities/Portfolio"));
 const portfolio_1 = require("./resolvers/portfolio");
+const User_1 = __importDefault(require("./entities/User"));
+const Portfolio_1 = __importDefault(require("./entities/Portfolio"));
+const Stock_1 = __importDefault(require("./entities/Stock"));
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     yield typeorm_1.createConnection({
         type: "postgres",
         host: "localhost",
         username: "postgres",
         password: "postgres",
-        database: "portfolio2chart",
+        database: "investack",
         synchronize: true,
         logging: !constants_1.__prod__,
-        entities: [User_1.default, Portfolio_1.default],
+        entities: [User_1.default, Portfolio_1.default, Stock_1.default],
         migrations: [path_1.default.join(__dirname + "/migrations/*")],
     });
     const app = express_1.default();

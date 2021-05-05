@@ -24,58 +24,40 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PortfolioResolver = exports.ChosenCrypto = exports.ChosenStocks = void 0;
-const Portfolio_1 = __importDefault(require("../entities/Portfolio"));
-const isAuth_1 = __importDefault(require("../middlewares/isAuth"));
-const addToPortfolio_1 = require("../utils/addToPortfolio");
+exports.PortfolioResolver = void 0;
+const Stock_1 = __importDefault(require("../entities/Stock"));
 const type_graphql_1 = require("type-graphql");
-let ChosenStocks = class ChosenStocks {
-};
-__decorate([
-    type_graphql_1.Field(),
-    __metadata("design:type", Array)
-], ChosenStocks.prototype, "stocks", void 0);
-ChosenStocks = __decorate([
-    type_graphql_1.InputType()
-], ChosenStocks);
-exports.ChosenStocks = ChosenStocks;
-let ChosenCrypto = class ChosenCrypto {
-};
-ChosenCrypto = __decorate([
-    type_graphql_1.InputType()
-], ChosenCrypto);
-exports.ChosenCrypto = ChosenCrypto;
+const Portfolio_1 = __importDefault(require("../entities/Portfolio"));
 let PortfolioResolver = class PortfolioResolver {
-    portfolio({ req }) {
+    myPortfolio({ req }) {
         return __awaiter(this, void 0, void 0, function* () {
             const { userId } = req.session;
             const portfolio = yield Portfolio_1.default.findOne({ where: { userId } });
             return portfolio;
         });
     }
-    addStocks({ req }, stocks) {
+    addStocks({ req }, stocksInput) {
         return __awaiter(this, void 0, void 0, function* () {
             const { userId } = req.session;
-            addToPortfolio_1.addToPortfolio(req, chosenStocks, stocks, "crypto");
-            const portfolio = yield Portfolio_1.default.findOne({ where: { userId } });
-            return portfolio;
+            const portfolio = yield Portfolio_1.default.findOne({ userId }, { relations: ["stocks"] });
+            console.log("portfolio: ", portfolio);
+            return true;
         });
     }
 };
 __decorate([
-    type_graphql_1.Query(() => Portfolio_1.default),
+    type_graphql_1.Query(() => Portfolio_1.default, { nullable: true }),
     __param(0, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], PortfolioResolver.prototype, "portfolio", null);
+], PortfolioResolver.prototype, "myPortfolio", null);
 __decorate([
-    type_graphql_1.Mutation(() => Portfolio_1.default),
-    type_graphql_1.UseMiddleware(isAuth_1.default),
+    type_graphql_1.Mutation(() => Boolean),
     __param(0, type_graphql_1.Ctx()),
-    __param(1, type_graphql_1.Arg("stocks", () => ChosenStocks)),
+    __param(1, type_graphql_1.Arg("stocksInput", () => [Stock_1.default])),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, ChosenStocks]),
+    __metadata("design:paramtypes", [Object, Array]),
     __metadata("design:returntype", Promise)
 ], PortfolioResolver.prototype, "addStocks", null);
 PortfolioResolver = __decorate([

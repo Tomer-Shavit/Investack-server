@@ -2,7 +2,6 @@ import "reflect-metadata";
 import { createConnection } from "typeorm";
 import path from "path";
 import { COOKIE_NAME, __prod__ } from "./constants";
-import User from "./entities/User";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
@@ -12,8 +11,10 @@ import session from "express-session";
 import connectRedis from "connect-redis";
 import { myContext } from "./types";
 import cors from "cors";
-import Portfolio from "./entities/Portfolio";
 import { PortfolioResolver } from "./resolvers/portfolio";
+import User from "./entities/User";
+import Portfolio from "./entities/Portfolio";
+import Stock from "./entities/Stock";
 
 //Because we need to await things we use this async main function and call it at the bottom
 const main = async () => {
@@ -23,14 +24,15 @@ const main = async () => {
     host: "localhost",
     username: "postgres",
     password: "postgres",
-    database: "portfolio2chart",
+    database: "investack",
     synchronize: true,
     logging: !__prod__,
-    entities: [User, Portfolio],
+    entities: [User, Portfolio, Stock],
     migrations: [path.join(__dirname + "/migrations/*")],
   });
 
   // await User.delete({});
+  // await Portfolio.delete({});
 
   //Creating an express app
   const app = express();

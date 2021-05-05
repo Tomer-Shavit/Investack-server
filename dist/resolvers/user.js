@@ -32,6 +32,7 @@ require("../customTypes/session/index");
 const checkRegisterInput_1 = require("../utils/checkRegisterInput");
 const argon2_1 = __importDefault(require("argon2"));
 const constants_1 = require("../constants");
+const Portfolio_1 = __importDefault(require("../entities/Portfolio"));
 let UserLoginInput = class UserLoginInput {
 };
 __decorate([
@@ -105,7 +106,7 @@ let UserResolver = class UserResolver {
             }
             const hashedPass = yield argon2_1.default.hash(userInput.password);
             try {
-                const result = yield typeorm_1.getConnection()
+                const userResult = yield typeorm_1.getConnection()
                     .createQueryBuilder()
                     .insert()
                     .into(User_1.default)
@@ -115,9 +116,24 @@ let UserResolver = class UserResolver {
                 })
                     .returning("*")
                     .execute();
-                const user = result.raw[0];
-                req.session.userId = user.id;
+                let user = userResult.raw[0];
+                const portoRes = yield typeorm_1.getConnection()
+                    .createQueryBuilder()
+                    .insert()
+                    .into(Portfolio_1.default)
+                    .values({
+                    user,
+                    value: 0,
+                    userId: user.id,
+                    stocks: [],
+                    crypto: [],
+                })
+                    .returning("*")
+                    .execute();
+                const portfolio = portoRes.raw[0];
+                console.log("portfolio: ", portfolio);
                 console.log("user: ", user);
+                req.session.userId = user.id;
                 return {
                     user,
                 };

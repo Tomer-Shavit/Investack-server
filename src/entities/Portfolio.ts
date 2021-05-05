@@ -1,16 +1,18 @@
-import { Field, InputType, ObjectType } from "type-graphql";
+import { Field, ObjectType } from "type-graphql";
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import User from "./User";
 import { Crypto } from "./Crypto";
-import { Stocks } from "./Stocks";
+import Stock from "./Stock";
 
 @Entity()
 @ObjectType()
@@ -23,19 +25,19 @@ class Portfolio extends BaseEntity {
   @Field()
   userId: number;
 
-  @Column("simple-array")
-  @Field(() => [Stocks])
-  stocks: Stocks[];
+  @Column("simple-array", { default: [] })
+  @OneToMany(() => Stock, (stock: Stock) => stock.portfolio)
+  stocks: Stock[];
 
-  @Column("simple-array")
-  @Field(() => [Crypto])
+  @Column("simple-array", { default: [] })
   crypto: Crypto[];
 
   @OneToOne(() => User, (user) => user.portfolio) //link a portfolio to a user
   @Field(() => User)
+  @JoinColumn({ name: "userId" })
   user: User;
 
-  @Column()
+  @Column({ default: 0 })
   @Field(() => Number) //The value of all the portfolio in usd
   value: number;
 
