@@ -28,6 +28,7 @@ const portfolio_1 = require("./resolvers/portfolio");
 const User_1 = __importDefault(require("./entities/User"));
 const Portfolio_1 = __importDefault(require("./entities/Portfolio"));
 const Stock_1 = __importDefault(require("./entities/Stock"));
+const Crypto_1 = __importDefault(require("./entities/Crypto"));
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     yield typeorm_1.createConnection({
         type: "postgres",
@@ -37,7 +38,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         database: "investack",
         synchronize: true,
         logging: !constants_1.__prod__,
-        entities: [User_1.default, Portfolio_1.default, Stock_1.default],
+        entities: [User_1.default, Portfolio_1.default, Stock_1.default, Crypto_1.default],
         migrations: [path_1.default.join(__dirname + "/migrations/*")],
     });
     const app = express_1.default();

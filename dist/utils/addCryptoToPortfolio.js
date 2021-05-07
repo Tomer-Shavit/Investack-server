@@ -12,37 +12,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addStocksToPortfolio = void 0;
-const Stock_1 = __importDefault(require("../entities/Stock"));
+exports.addCryptoToPortfolio = void 0;
+const Crypto_1 = __importDefault(require("../entities/Crypto"));
 const Portfolio_1 = __importDefault(require("../entities/Portfolio"));
-const addStocksToPortfolio = (req, stocks) => __awaiter(void 0, void 0, void 0, function* () {
+const addCryptoToPortfolio = (req, cryptos) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.session;
-    const portfolio = yield Portfolio_1.default.findOne({ userId }, { relations: ["stocks"] });
+    const portfolio = yield Portfolio_1.default.findOne({ userId }, { relations: ["crypto"] });
     if (!portfolio) {
         console.log("No portfolio were found");
         return;
     }
-    const ownedStocks = stocksArrToMap(portfolio.stocks);
-    stocks.forEach((stock) => __awaiter(void 0, void 0, void 0, function* () {
-        if (stock.symbol in ownedStocks) {
-            ownedStocks[stock.symbol] += stock.shares;
-            yield Stock_1.default.update({ portfolioId: portfolio.id, symbol: stock.symbol }, { shares: ownedStocks[stock.symbol] });
+    const ownedCryptos = cryptoArrToMap(portfolio.crypto);
+    cryptos.forEach((crypto) => __awaiter(void 0, void 0, void 0, function* () {
+        if (crypto.name in ownedCryptos) {
+            ownedCryptos[crypto.name] += crypto.amount;
+            yield Crypto_1.default.update({ portfolioId: portfolio.id, name: crypto.name }, { amount: ownedCryptos[crypto.name] });
         }
         else {
-            yield Stock_1.default.create({
-                symbol: stock.symbol,
-                shares: stock.shares,
+            yield Crypto_1.default.create({
+                name: crypto.name,
+                amount: crypto.amount,
                 portfolioId: portfolio.id,
             }).save();
         }
     }));
 });
-exports.addStocksToPortfolio = addStocksToPortfolio;
-const stocksArrToMap = (stocks) => {
+exports.addCryptoToPortfolio = addCryptoToPortfolio;
+const cryptoArrToMap = (cryptos) => {
     const dict = {};
-    stocks.forEach((stock) => {
-        dict[stock.symbol] = stock.shares;
+    cryptos.forEach((crypto) => {
+        dict[crypto.name] = crypto.amount;
     });
     return dict;
 };
-//# sourceMappingURL=addStocksToPortfolio.js.map
+//# sourceMappingURL=addCryptoToPortfolio.js.map

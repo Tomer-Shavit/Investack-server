@@ -85,7 +85,9 @@ let UserResolver = class UserResolver {
             if (!req.session.userId) {
                 return null;
             }
-            const user = User_1.default.findOne(req.session.userId);
+            const user = User_1.default.findOne(req.session.userId, {
+                relations: ["portfolio", "portfolio.stocks", "portfolio.crypto"],
+            });
             return {
                 user,
             };
@@ -117,7 +119,7 @@ let UserResolver = class UserResolver {
                     .returning("*")
                     .execute();
                 let user = userResult.raw[0];
-                const portoRes = yield typeorm_1.getConnection()
+                yield typeorm_1.getConnection()
                     .createQueryBuilder()
                     .insert()
                     .into(Portfolio_1.default)
@@ -128,11 +130,7 @@ let UserResolver = class UserResolver {
                     stocks: [],
                     crypto: [],
                 })
-                    .returning("*")
                     .execute();
-                const portfolio = portoRes.raw[0];
-                console.log("portfolio: ", portfolio);
-                console.log("user: ", user);
                 req.session.userId = user.id;
                 return {
                     user,

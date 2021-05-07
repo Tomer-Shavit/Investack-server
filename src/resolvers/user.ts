@@ -61,7 +61,9 @@ export class UserResolver {
     if (!req.session.userId) {
       return null;
     }
-    const user = User.findOne(req.session.userId);
+    const user = User.findOne(req.session.userId, {
+      relations: ["portfolio", "portfolio.stocks", "portfolio.crypto"],
+    });
     return {
       user,
     };
@@ -103,7 +105,8 @@ export class UserResolver {
       let user: User = userResult.raw[0];
 
       // Creating a portfolio for the user
-      const portoRes = await getConnection()
+      // TODO: connect the 2 sql statements
+      await getConnection()
         .createQueryBuilder()
         .insert()
         .into(Portfolio)
@@ -114,14 +117,7 @@ export class UserResolver {
           stocks: [],
           crypto: [],
         })
-        .returning("*")
         .execute();
-
-      const portfolio: Portfolio = portoRes.raw[0];
-
-      console.log("portfolio: ", portfolio);
-
-      console.log("user: ", user);
 
       //save the user id in the session (redis store)
       req.session.userId = user.id;

@@ -45,4 +45,4 @@ const stocksArrToMap = (stocks) => {
     });
     return dict;
 };
-//# sourceMappingURL=addStocksToPortfolio.js.map
+//# sourceMappingURL=addStocks.js.map

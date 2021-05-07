@@ -11,7 +11,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import User from "./User";
-import { Crypto } from "./Crypto";
+import Crypto from "./Crypto";
 import Stock from "./Stock";
 
 @Entity()
@@ -25,11 +25,14 @@ class Portfolio extends BaseEntity {
   @Field()
   userId: number;
 
+  @Field(() => [Stock])
   @Column("simple-array", { default: [] })
   @OneToMany(() => Stock, (stock: Stock) => stock.portfolio)
   stocks: Stock[];
 
+  @Field(() => [Crypto])
   @Column("simple-array", { default: [] })
+  @OneToMany(() => Crypto, (crypto) => crypto.portfolio)
   crypto: Crypto[];
 
   @OneToOne(() => User, (user) => user.portfolio) //link a portfolio to a user

@@ -15,7 +15,7 @@ import { PortfolioResolver } from "./resolvers/portfolio";
 import User from "./entities/User";
 import Portfolio from "./entities/Portfolio";
 import Stock from "./entities/Stock";
-
+import Crypto from "./entities/Crypto";
 //Because we need to await things we use this async main function and call it at the bottom
 const main = async () => {
   //Creates the connection with the DB using mikroORM
@@ -27,12 +27,13 @@ const main = async () => {
     database: "investack",
     synchronize: true,
     logging: !__prod__,
-    entities: [User, Portfolio, Stock],
+    entities: [User, Portfolio, Stock, Crypto],
     migrations: [path.join(__dirname + "/migrations/*")],
   });
 
   // await User.delete({});
   // await Portfolio.delete({});
+  // await Stock.delete({});
 
   //Creating an express app
   const app = express();

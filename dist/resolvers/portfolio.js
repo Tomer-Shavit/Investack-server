@@ -26,21 +26,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PortfolioResolver = void 0;
 const Stock_1 = __importDefault(require("../entities/Stock"));
+const Crypto_1 = __importDefault(require("../entities/Crypto"));
 const type_graphql_1 = require("type-graphql");
 const Portfolio_1 = __importDefault(require("../entities/Portfolio"));
+const addStocksToPortfolio_1 = require("../utils/addStocksToPortfolio");
+const addCryptoToPortfolio_1 = require("../utils/addCryptoToPortfolio");
 let PortfolioResolver = class PortfolioResolver {
     myPortfolio({ req }) {
         return __awaiter(this, void 0, void 0, function* () {
             const { userId } = req.session;
-            const portfolio = yield Portfolio_1.default.findOne({ where: { userId } });
+            const portfolio = yield Portfolio_1.default.findOne({ userId }, {
+                relations: ["stocks", "crypto"],
+            });
             return portfolio;
         });
     }
     addStocks({ req }, stocksInput) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { userId } = req.session;
-            const portfolio = yield Portfolio_1.default.findOne({ userId }, { relations: ["stocks"] });
-            console.log("portfolio: ", portfolio);
+            yield addStocksToPortfolio_1.addStocksToPortfolio(req, stocksInput);
+            return true;
+        });
+    }
+    addCrypto({ req }, cryptoInput) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield addCryptoToPortfolio_1.addCryptoToPortfolio(req, cryptoInput);
             return true;
         });
     }
@@ -60,6 +69,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, Array]),
     __metadata("design:returntype", Promise)
 ], PortfolioResolver.prototype, "addStocks", null);
+__decorate([
+    type_graphql_1.Mutation(() => Boolean),
+    __param(0, type_graphql_1.Ctx()),
+    __param(1, type_graphql_1.Arg("cryptoInput", () => [Crypto_1.default])),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Array]),
+    __metadata("design:returntype", Promise)
+], PortfolioResolver.prototype, "addCrypto", null);
 PortfolioResolver = __decorate([
     type_graphql_1.Resolver(() => Portfolio_1.default)
 ], PortfolioResolver);
