@@ -19,7 +19,7 @@ const addStocksToPortfolio = (req, stocks) => __awaiter(void 0, void 0, void 0, 
     const { userId } = req.session;
     const portfolio = yield Portfolio_1.default.findOne({ userId }, { relations: ["stocks"] });
     if (!portfolio) {
-        console.log("No portfolio were found");
+        console.log("No portfolio was found");
         return;
     }
     const ownedStocks = stocksArrToMap(portfolio.stocks);

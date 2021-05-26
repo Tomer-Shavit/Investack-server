@@ -10,7 +10,7 @@ export const addStocksToPortfolio = async (req: Request, stocks: Stock[]) => {
   );
 
   if (!portfolio) {
-    console.log("No portfolio were found");
+    console.log("No portfolio was found");
     return;
     //do nothing
   }

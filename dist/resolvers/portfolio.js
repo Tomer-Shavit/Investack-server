@@ -31,6 +31,7 @@ const type_graphql_1 = require("type-graphql");
 const Portfolio_1 = __importDefault(require("../entities/Portfolio"));
 const addStocksToPortfolio_1 = require("../utils/addStocksToPortfolio");
 const addCryptoToPortfolio_1 = require("../utils/addCryptoToPortfolio");
+const isAuth_1 = __importDefault(require("../middlewares/isAuth"));
 let PortfolioResolver = class PortfolioResolver {
     myPortfolio({ req }) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -53,6 +54,23 @@ let PortfolioResolver = class PortfolioResolver {
             return true;
         });
     }
+    editValue({ req }, amount) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { userId } = req.session;
+            const portfolio = yield Portfolio_1.default.findOne({ userId });
+            if (!portfolio) {
+                console.log("No portfolio was found");
+                return false;
+            }
+            let value = portfolio.value;
+            value += amount;
+            if (value < 0) {
+                return false;
+            }
+            yield Portfolio_1.default.update({ userId }, { value });
+            return true;
+        });
+    }
 };
 __decorate([
     type_graphql_1.Query(() => Portfolio_1.default, { nullable: true }),
@@ -63,6 +81,7 @@ __decorate([
 ], PortfolioResolver.prototype, "myPortfolio", null);
 __decorate([
     type_graphql_1.Mutation(() => Boolean),
+    type_graphql_1.UseMiddleware(isAuth_1.default),
     __param(0, type_graphql_1.Ctx()),
     __param(1, type_graphql_1.Arg("stocksInput", () => [Stock_1.default])),
     __metadata("design:type", Function),
@@ -71,12 +90,22 @@ __decorate([
 ], PortfolioResolver.prototype, "addStocks", null);
 __decorate([
     type_graphql_1.Mutation(() => Boolean),
+    type_graphql_1.UseMiddleware(isAuth_1.default),
     __param(0, type_graphql_1.Ctx()),
     __param(1, type_graphql_1.Arg("cryptoInput", () => [Crypto_1.default])),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Array]),
     __metadata("design:returntype", Promise)
 ], PortfolioResolver.prototype, "addCrypto", null);
+__decorate([
+    type_graphql_1.Mutation(() => Boolean),
+    type_graphql_1.UseMiddleware(isAuth_1.default),
+    __param(0, type_graphql_1.Ctx()),
+    __param(1, type_graphql_1.Arg("amount")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Number]),
+    __metadata("design:returntype", Promise)
+], PortfolioResolver.prototype, "editValue", null);
 PortfolioResolver = __decorate([
     type_graphql_1.Resolver(() => Portfolio_1.default)
 ], PortfolioResolver);
