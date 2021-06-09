@@ -25,13 +25,18 @@ const addStocksToPortfolio = (req, stocks) => __awaiter(void 0, void 0, void 0, 
     const ownedStocks = stocksArrToMap(portfolio.stocks);
     stocks.forEach((stock) => __awaiter(void 0, void 0, void 0, function* () {
         if (stock.symbol in ownedStocks) {
-            ownedStocks[stock.symbol] += stock.shares;
-            yield Stock_1.default.update({ portfolioId: portfolio.id, symbol: stock.symbol }, { shares: ownedStocks[stock.symbol] });
+            ownedStocks[stock.symbol].shares += stock.shares;
+            ownedStocks[stock.symbol].value += stock.value;
+            yield Stock_1.default.update({ portfolioId: portfolio.id, symbol: stock.symbol }, {
+                shares: ownedStocks[stock.symbol].shares,
+                value: ownedStocks[stock.symbol].value,
+            });
         }
         else {
             yield Stock_1.default.create({
                 symbol: stock.symbol,
                 shares: stock.shares,
+                value: stock.value,
                 portfolioId: portfolio.id,
             }).save();
         }
@@ -41,7 +46,7 @@ exports.addStocksToPortfolio = addStocksToPortfolio;
 const stocksArrToMap = (stocks) => {
     const dict = {};
     stocks.forEach((stock) => {
-        dict[stock.symbol] = stock.shares;
+        dict[stock.symbol] = { shares: stock.shares, value: stock.value };
     });
     return dict;
 };

@@ -24,6 +24,10 @@ class Stock extends BaseEntity {
   @Field()
   shares: number;
 
+  @Column("float")
+  @Field()
+  value: number;
+
   @Column()
   portfolioId: number;
   @ManyToOne(() => Portfolio, (portfolio: Portfolio) => portfolio.stocks)

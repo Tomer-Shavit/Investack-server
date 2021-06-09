@@ -18,11 +18,15 @@ class Crypto extends BaseEntity {
 
   @Column()
   @Field()
-  name: string;
+  symbol: string;
 
   @Column("float")
   @Field()
   amount: number;
+
+  @Column("float")
+  @Field()
+  value: number;
 
   @Column()
   portfolioId: number;

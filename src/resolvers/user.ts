@@ -112,7 +112,7 @@ export class UserResolver {
         .into(Portfolio)
         .values({
           user,
-          value: 0,
+          stocksValue: "0",
           userId: user.id,
           stocks: [],
           crypto: [],

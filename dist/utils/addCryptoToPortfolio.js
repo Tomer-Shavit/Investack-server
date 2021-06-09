@@ -24,14 +24,19 @@ const addCryptoToPortfolio = (req, cryptos) => __awaiter(void 0, void 0, void 0,
     }
     const ownedCryptos = cryptoArrToMap(portfolio.crypto);
     cryptos.forEach((crypto) => __awaiter(void 0, void 0, void 0, function* () {
-        if (crypto.name in ownedCryptos) {
-            ownedCryptos[crypto.name] += crypto.amount;
-            yield Crypto_1.default.update({ portfolioId: portfolio.id, name: crypto.name }, { amount: ownedCryptos[crypto.name] });
+        if (crypto.symbol in ownedCryptos) {
+            ownedCryptos[crypto.symbol].amount += crypto.amount;
+            ownedCryptos[crypto.symbol].value += crypto.value;
+            yield Crypto_1.default.update({ portfolioId: portfolio.id, symbol: crypto.symbol }, {
+                amount: ownedCryptos[crypto.symbol].amount,
+                value: ownedCryptos[crypto.symbol].value,
+            });
         }
         else {
             yield Crypto_1.default.create({
-                name: crypto.name,
+                symbol: crypto.symbol,
                 amount: crypto.amount,
+                value: crypto.value,
                 portfolioId: portfolio.id,
             }).save();
         }
@@ -41,7 +46,7 @@ exports.addCryptoToPortfolio = addCryptoToPortfolio;
 const cryptoArrToMap = (cryptos) => {
     const dict = {};
     cryptos.forEach((crypto) => {
-        dict[crypto.name] = crypto.amount;
+        dict[crypto.symbol] = { amount: crypto.amount, value: crypto.value };
     });
     return dict;
 };

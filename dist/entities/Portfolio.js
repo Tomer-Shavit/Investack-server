@@ -48,10 +48,15 @@ __decorate([
     __metadata("design:type", User_1.default)
 ], Portfolio.prototype, "user", void 0);
 __decorate([
-    typeorm_1.Column({ default: 0 }),
+    typeorm_1.Column({ default: 0, type: "real" }),
     type_graphql_1.Field(() => Number),
-    __metadata("design:type", Number)
-], Portfolio.prototype, "value", void 0);
+    __metadata("design:type", String)
+], Portfolio.prototype, "stocksValue", void 0);
+__decorate([
+    typeorm_1.Column({ default: 0, type: "real" }),
+    type_graphql_1.Field(() => Number),
+    __metadata("design:type", String)
+], Portfolio.prototype, "cryptoValue", void 0);
 __decorate([
     typeorm_1.CreateDateColumn(),
     type_graphql_1.Field(() => String),

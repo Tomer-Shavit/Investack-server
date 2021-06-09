@@ -32,6 +32,11 @@ __decorate([
     __metadata("design:type", Number)
 ], Stock.prototype, "shares", void 0);
 __decorate([
+    typeorm_1.Column("float"),
+    type_graphql_1.Field(),
+    __metadata("design:type", Number)
+], Stock.prototype, "value", void 0);
+__decorate([
     typeorm_1.Column(),
     __metadata("design:type", Number)
 ], Stock.prototype, "portfolioId", void 0);

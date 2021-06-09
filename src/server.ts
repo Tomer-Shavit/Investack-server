@@ -16,9 +16,8 @@ import User from "./entities/User";
 import Portfolio from "./entities/Portfolio";
 import Stock from "./entities/Stock";
 import Crypto from "./entities/Crypto";
-//Because we need to await things we use this async main function and call it at the bottom
+
 const main = async () => {
-  //Creates the connection with the DB using mikroORM
   await createConnection({
     type: "postgres",
     host: "localhost",
@@ -34,6 +33,7 @@ const main = async () => {
   // await User.delete({});
   // await Portfolio.delete({});
   // await Stock.delete({});
+  // await Crypto.delete({});
 
   //Creating an express app
   const app = express();
@@ -56,8 +56,8 @@ const main = async () => {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
         sameSite: "lax",
         httpOnly: true,
-        secure: __prod__, // will make the cookies move through https
-      }, // Note that the cookie-parser module is no longer needed
+        secure: __prod__,
+      },
       store: new RedisStore({
         client: redis,
         disableTouch: true,
@@ -74,10 +74,8 @@ const main = async () => {
     context: ({ req, res }): myContext => ({ req, res, redis }),
   });
 
-  // Here we connect the /graphql playground with our app
   apolloServer.applyMiddleware({ app, cors: false });
 
-  // Launching the server on port 4000
   app.listen(4000, () => {
     console.log(`Server is running on localhost:4000`);
   });

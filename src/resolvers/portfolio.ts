@@ -13,6 +13,7 @@ import { myContext } from "../types";
 import { addStocksToPortfolio } from "../utils/addStocksToPortfolio";
 import { addCryptoToPortfolio } from "../utils/addCryptoToPortfolio";
 import isAuth from "../middlewares/isAuth";
+import { getConnection } from "typeorm";
 
 @Resolver(() => Portfolio)
 export class PortfolioResolver {
@@ -50,7 +51,7 @@ export class PortfolioResolver {
 
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
-  async editValue(
+  async editStocksValue(
     @Ctx() { req }: myContext,
     @Arg("amount") amount: number
   ): Promise<Boolean> {
@@ -60,13 +61,52 @@ export class PortfolioResolver {
       console.log("No portfolio was found");
       return false;
     }
-    let value = portfolio.value;
-    value += amount;
 
-    if (value < 0) {
+    let value = portfolio.stocksValue;
+    const numValue = parseFloat(value) + amount;
+
+    if (numValue < 0) {
       return false;
     }
-    await Portfolio.update({ userId }, { value });
+
+    const strValue = numValue.toString();
+    await getConnection()
+      .createQueryBuilder()
+      .update(Portfolio)
+      .set({ stocksValue: strValue })
+      .where("userId = :userId", { userId })
+      .execute();
+
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async editCryptoValue(
+    @Ctx() { req }: myContext,
+    @Arg("amount") amount: number
+  ): Promise<Boolean> {
+    const { userId } = req.session;
+    const portfolio = await Portfolio.findOne({ userId });
+    if (!portfolio) {
+      console.log("No portfolio was found");
+      return false;
+    }
+
+    let value = portfolio.cryptoValue;
+    const numValue = parseFloat(value) + amount;
+
+    if (numValue < 0) {
+      return false;
+    }
+
+    const strValue = numValue.toString();
+    await getConnection()
+      .createQueryBuilder()
+      .update(Portfolio)
+      .set({ cryptoValue: strValue })
+      .where("userId = :userId", { userId })
+      .execute();
 
     return true;
   }

@@ -17,26 +17,32 @@ export const addCryptoToPortfolio = async (req: Request, cryptos: Crypto[]) => {
   const ownedCryptos = cryptoArrToMap(portfolio.crypto);
 
   cryptos.forEach(async (crypto) => {
-    if (crypto.name in ownedCryptos) {
-      ownedCryptos[crypto.name] += crypto.amount;
+    if (crypto.symbol in ownedCryptos) {
+      ownedCryptos[crypto.symbol].amount += crypto.amount;
+      ownedCryptos[crypto.symbol].value += crypto.value;
+
       await Crypto.update(
-        { portfolioId: portfolio.id, name: crypto.name },
-        { amount: ownedCryptos[crypto.name] }
+        { portfolioId: portfolio.id, symbol: crypto.symbol },
+        {
+          amount: ownedCryptos[crypto.symbol].amount,
+          value: ownedCryptos[crypto.symbol].value,
+        }
       );
     } else {
       await Crypto.create({
-        name: crypto.name,
+        symbol: crypto.symbol,
         amount: crypto.amount,
+        value: crypto.value,
         portfolioId: portfolio.id,
       }).save();
     }
   });
 };
 
-const cryptoArrToMap = (cryptos: Crypto[]): Record<string, number> => {
-  const dict: Record<string, number> = {};
+const cryptoArrToMap = (cryptos: Crypto[]) => {
+  const dict: any = {};
   cryptos.forEach((crypto) => {
-    dict[crypto.name] = crypto.amount;
+    dict[crypto.symbol] = { amount: crypto.amount, value: crypto.value };
   });
 
   return dict;

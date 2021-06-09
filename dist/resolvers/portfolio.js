@@ -32,6 +32,7 @@ const Portfolio_1 = __importDefault(require("../entities/Portfolio"));
 const addStocksToPortfolio_1 = require("../utils/addStocksToPortfolio");
 const addCryptoToPortfolio_1 = require("../utils/addCryptoToPortfolio");
 const isAuth_1 = __importDefault(require("../middlewares/isAuth"));
+const typeorm_1 = require("typeorm");
 let PortfolioResolver = class PortfolioResolver {
     myPortfolio({ req }) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -54,7 +55,7 @@ let PortfolioResolver = class PortfolioResolver {
             return true;
         });
     }
-    editValue({ req }, amount) {
+    editStocksValue({ req }, amount) {
         return __awaiter(this, void 0, void 0, function* () {
             const { userId } = req.session;
             const portfolio = yield Portfolio_1.default.findOne({ userId });
@@ -62,12 +63,41 @@ let PortfolioResolver = class PortfolioResolver {
                 console.log("No portfolio was found");
                 return false;
             }
-            let value = portfolio.value;
-            value += amount;
-            if (value < 0) {
+            let value = portfolio.stocksValue;
+            const numValue = parseFloat(value) + amount;
+            if (numValue < 0) {
                 return false;
             }
-            yield Portfolio_1.default.update({ userId }, { value });
+            const strValue = numValue.toString();
+            yield typeorm_1.getConnection()
+                .createQueryBuilder()
+                .update(Portfolio_1.default)
+                .set({ stocksValue: strValue })
+                .where("userId = :userId", { userId })
+                .execute();
+            return true;
+        });
+    }
+    editCryptoValue({ req }, amount) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { userId } = req.session;
+            const portfolio = yield Portfolio_1.default.findOne({ userId });
+            if (!portfolio) {
+                console.log("No portfolio was found");
+                return false;
+            }
+            let value = portfolio.cryptoValue;
+            const numValue = parseFloat(value) + amount;
+            if (numValue < 0) {
+                return false;
+            }
+            const strValue = numValue.toString();
+            yield typeorm_1.getConnection()
+                .createQueryBuilder()
+                .update(Portfolio_1.default)
+                .set({ cryptoValue: strValue })
+                .where("userId = :userId", { userId })
+                .execute();
             return true;
         });
     }
@@ -105,7 +135,16 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Number]),
     __metadata("design:returntype", Promise)
-], PortfolioResolver.prototype, "editValue", null);
+], PortfolioResolver.prototype, "editStocksValue", null);
+__decorate([
+    type_graphql_1.Mutation(() => Boolean),
+    type_graphql_1.UseMiddleware(isAuth_1.default),
+    __param(0, type_graphql_1.Ctx()),
+    __param(1, type_graphql_1.Arg("amount")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Number]),
+    __metadata("design:returntype", Promise)
+], PortfolioResolver.prototype, "editCryptoValue", null);
 PortfolioResolver = __decorate([
     type_graphql_1.Resolver(() => Portfolio_1.default)
 ], PortfolioResolver);

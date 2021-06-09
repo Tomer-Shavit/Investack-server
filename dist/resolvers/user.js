@@ -125,7 +125,7 @@ let UserResolver = class UserResolver {
                     .into(Portfolio_1.default)
                     .values({
                     user,
-                    value: 0,
+                    stocksValue: "0",
                     userId: user.id,
                     stocks: [],
                     crypto: [],

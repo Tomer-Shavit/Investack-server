@@ -35,14 +35,18 @@ class Portfolio extends BaseEntity {
   @OneToMany(() => Crypto, (crypto) => crypto.portfolio)
   crypto: Crypto[];
 
-  @OneToOne(() => User, (user) => user.portfolio) //link a portfolio to a user
+  @OneToOne(() => User, (user) => user.portfolio)
   @Field(() => User)
   @JoinColumn({ name: "userId" })
   user: User;
 
-  @Column({ default: 0 })
-  @Field(() => Number) //The value of all the portfolio in usd
-  value: number;
+  @Column({ default: 0, type: "real" })
+  @Field(() => Number)
+  stocksValue: string;
+
+  @Column({ default: 0, type: "real" })
+  @Field(() => Number)
+  cryptoValue: string;
 
   @CreateDateColumn()
   @Field(() => String)

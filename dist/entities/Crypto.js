@@ -25,12 +25,17 @@ __decorate([
     typeorm_1.Column(),
     type_graphql_1.Field(),
     __metadata("design:type", String)
-], Crypto.prototype, "name", void 0);
+], Crypto.prototype, "symbol", void 0);
 __decorate([
     typeorm_1.Column("float"),
     type_graphql_1.Field(),
     __metadata("design:type", Number)
 ], Crypto.prototype, "amount", void 0);
+__decorate([
+    typeorm_1.Column("float"),
+    type_graphql_1.Field(),
+    __metadata("design:type", Number)
+], Crypto.prototype, "value", void 0);
 __decorate([
     typeorm_1.Column(),
     __metadata("design:type", Number)
