@@ -22,7 +22,7 @@ class Stock extends BaseEntity {
 
   @Column("float")
   @Field()
-  shares: number;
+  amount: number;
 
   @Column("float")
   @Field()

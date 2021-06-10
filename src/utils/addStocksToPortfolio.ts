@@ -18,19 +18,19 @@ export const addStocksToPortfolio = async (req: Request, stocks: Stock[]) => {
 
   stocks.forEach(async (stock) => {
     if (stock.symbol in ownedStocks) {
-      ownedStocks[stock.symbol].shares += stock.shares;
+      ownedStocks[stock.symbol].amount += stock.amount;
       ownedStocks[stock.symbol].value += stock.value;
       await Stock.update(
         { portfolioId: portfolio.id, symbol: stock.symbol },
         {
-          shares: ownedStocks[stock.symbol].shares,
+          amount: ownedStocks[stock.symbol].amount,
           value: ownedStocks[stock.symbol].value,
         }
       );
     } else {
       await Stock.create({
         symbol: stock.symbol,
-        shares: stock.shares,
+        amount: stock.amount,
         value: stock.value,
         portfolioId: portfolio.id,
       }).save();
@@ -41,7 +41,7 @@ export const addStocksToPortfolio = async (req: Request, stocks: Stock[]) => {
 const stocksArrToMap = (stocks: Stock[]) => {
   const dict: any = {};
   stocks.forEach((stock) => {
-    dict[stock.symbol] = { shares: stock.shares, value: stock.value };
+    dict[stock.symbol] = { amount: stock.amount, value: stock.value };
   });
 
   return dict;

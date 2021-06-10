@@ -30,7 +30,7 @@ __decorate([
     typeorm_1.Column("float"),
     type_graphql_1.Field(),
     __metadata("design:type", Number)
-], Stock.prototype, "shares", void 0);
+], Stock.prototype, "amount", void 0);
 __decorate([
     typeorm_1.Column("float"),
     type_graphql_1.Field(),
