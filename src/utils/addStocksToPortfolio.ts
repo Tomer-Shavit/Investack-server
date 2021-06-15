@@ -20,13 +20,21 @@ export const addStocksToPortfolio = async (req: Request, stocks: Stock[]) => {
     if (stock.symbol in ownedStocks) {
       ownedStocks[stock.symbol].amount += stock.amount;
       ownedStocks[stock.symbol].value += stock.value;
-      await Stock.update(
-        { portfolioId: portfolio.id, symbol: stock.symbol },
-        {
-          amount: ownedStocks[stock.symbol].amount,
-          value: ownedStocks[stock.symbol].value,
-        }
-      );
+
+      if (ownedStocks[stock.symbol].amount <= 0) {
+        await Stock.delete({
+          portfolioId: portfolio.id,
+          symbol: stock.symbol,
+        });
+      } else {
+        await Stock.update(
+          { portfolioId: portfolio.id, symbol: stock.symbol },
+          {
+            amount: ownedStocks[stock.symbol].amount,
+            value: ownedStocks[stock.symbol].value,
+          }
+        );
+      }
     } else {
       await Stock.create({
         symbol: stock.symbol,

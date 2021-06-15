@@ -21,7 +21,7 @@ export const addCryptoToPortfolio = async (req: Request, cryptos: Crypto[]) => {
       ownedCryptos[crypto.symbol].amount += crypto.amount;
       ownedCryptos[crypto.symbol].value += crypto.value;
 
-      if (ownedCryptos[crypto.symbol].amount == 0) {
+      if (ownedCryptos[crypto.symbol].amount <= 0) {
         await Crypto.delete({
           portfolioId: portfolio.id,
           symbol: crypto.symbol,

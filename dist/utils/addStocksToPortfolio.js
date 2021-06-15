@@ -27,10 +27,18 @@ const addStocksToPortfolio = (req, stocks) => __awaiter(void 0, void 0, void 0, 
         if (stock.symbol in ownedStocks) {
             ownedStocks[stock.symbol].amount += stock.amount;
             ownedStocks[stock.symbol].value += stock.value;
-            yield Stock_1.default.update({ portfolioId: portfolio.id, symbol: stock.symbol }, {
-                amount: ownedStocks[stock.symbol].amount,
-                value: ownedStocks[stock.symbol].value,
-            });
+            if (ownedStocks[stock.symbol].amount <= 0) {
+                yield Stock_1.default.delete({
+                    portfolioId: portfolio.id,
+                    symbol: stock.symbol,
+                });
+            }
+            else {
+                yield Stock_1.default.update({ portfolioId: portfolio.id, symbol: stock.symbol }, {
+                    amount: ownedStocks[stock.symbol].amount,
+                    value: ownedStocks[stock.symbol].value,
+                });
+            }
         }
         else {
             yield Stock_1.default.create({
