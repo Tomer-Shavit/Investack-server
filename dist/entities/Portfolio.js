@@ -32,13 +32,13 @@ __decorate([
 __decorate([
     type_graphql_1.Field(() => [Stock_1.default]),
     typeorm_1.Column("simple-array", { default: [] }),
-    typeorm_1.OneToMany(() => Stock_1.default, (stock) => stock.portfolio),
+    typeorm_1.OneToMany(() => Stock_1.default, (stock) => stock.portfolio, { cascade: true }),
     __metadata("design:type", Array)
 ], Portfolio.prototype, "stocks", void 0);
 __decorate([
     type_graphql_1.Field(() => [Crypto_1.default]),
     typeorm_1.Column("simple-array", { default: [] }),
-    typeorm_1.OneToMany(() => Crypto_1.default, (crypto) => crypto.portfolio),
+    typeorm_1.OneToMany(() => Crypto_1.default, (crypto) => crypto.portfolio, { cascade: true }),
     __metadata("design:type", Array)
 ], Portfolio.prototype, "crypto", void 0);
 __decorate([

@@ -27,10 +27,18 @@ const addCryptoToPortfolio = (req, cryptos) => __awaiter(void 0, void 0, void 0,
         if (crypto.symbol in ownedCryptos) {
             ownedCryptos[crypto.symbol].amount += crypto.amount;
             ownedCryptos[crypto.symbol].value += crypto.value;
-            yield Crypto_1.default.update({ portfolioId: portfolio.id, symbol: crypto.symbol }, {
-                amount: ownedCryptos[crypto.symbol].amount,
-                value: ownedCryptos[crypto.symbol].value,
-            });
+            if (ownedCryptos[crypto.symbol].amount == 0) {
+                yield Crypto_1.default.delete({
+                    portfolioId: portfolio.id,
+                    symbol: crypto.symbol,
+                });
+            }
+            else {
+                yield Crypto_1.default.update({ portfolioId: portfolio.id, symbol: crypto.symbol }, {
+                    amount: ownedCryptos[crypto.symbol].amount,
+                    value: ownedCryptos[crypto.symbol].value,
+                });
+            }
         }
         else {
             yield Crypto_1.default.create({

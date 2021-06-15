@@ -27,12 +27,12 @@ class Portfolio extends BaseEntity {
 
   @Field(() => [Stock])
   @Column("simple-array", { default: [] })
-  @OneToMany(() => Stock, (stock: Stock) => stock.portfolio)
+  @OneToMany(() => Stock, (stock: Stock) => stock.portfolio, { cascade: true })
   stocks: Stock[];
 
   @Field(() => [Crypto])
   @Column("simple-array", { default: [] })
-  @OneToMany(() => Crypto, (crypto) => crypto.portfolio)
+  @OneToMany(() => Crypto, (crypto) => crypto.portfolio, { cascade: true })
   crypto: Crypto[];
 
   @OneToOne(() => User, (user) => user.portfolio)

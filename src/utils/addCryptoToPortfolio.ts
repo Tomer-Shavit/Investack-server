@@ -21,13 +21,20 @@ export const addCryptoToPortfolio = async (req: Request, cryptos: Crypto[]) => {
       ownedCryptos[crypto.symbol].amount += crypto.amount;
       ownedCryptos[crypto.symbol].value += crypto.value;
 
-      await Crypto.update(
-        { portfolioId: portfolio.id, symbol: crypto.symbol },
-        {
-          amount: ownedCryptos[crypto.symbol].amount,
-          value: ownedCryptos[crypto.symbol].value,
-        }
-      );
+      if (ownedCryptos[crypto.symbol].amount == 0) {
+        await Crypto.delete({
+          portfolioId: portfolio.id,
+          symbol: crypto.symbol,
+        });
+      } else {
+        await Crypto.update(
+          { portfolioId: portfolio.id, symbol: crypto.symbol },
+          {
+            amount: ownedCryptos[crypto.symbol].amount,
+            value: ownedCryptos[crypto.symbol].value,
+          }
+        );
+      }
     } else {
       await Crypto.create({
         symbol: crypto.symbol,
