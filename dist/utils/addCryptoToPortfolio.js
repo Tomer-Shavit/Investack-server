@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.addCryptoToPortfolio = void 0;
+const Transaction_1 = __importDefault(require("../entities/Transaction"));
 const Crypto_1 = __importDefault(require("../entities/Crypto"));
 const Portfolio_1 = __importDefault(require("../entities/Portfolio"));
 const addCryptoToPortfolio = (req, cryptos) => __awaiter(void 0, void 0, void 0, function* () {
@@ -24,6 +25,12 @@ const addCryptoToPortfolio = (req, cryptos) => __awaiter(void 0, void 0, void 0,
     }
     const ownedCryptos = cryptoArrToMap(portfolio.crypto);
     cryptos.forEach((crypto) => __awaiter(void 0, void 0, void 0, function* () {
+        yield Transaction_1.default.create({
+            portfolioId: portfolio.id,
+            amount: crypto.amount,
+            value: crypto.value,
+            symbol: crypto.symbol,
+        }).save();
         if (crypto.symbol in ownedCryptos) {
             ownedCryptos[crypto.symbol].amount += crypto.amount;
             ownedCryptos[crypto.symbol].value += crypto.value;

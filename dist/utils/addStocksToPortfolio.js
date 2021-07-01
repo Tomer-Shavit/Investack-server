@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.addStocksToPortfolio = void 0;
 const Stock_1 = __importDefault(require("../entities/Stock"));
 const Portfolio_1 = __importDefault(require("../entities/Portfolio"));
+const Transaction_1 = __importDefault(require("../entities/Transaction"));
 const addStocksToPortfolio = (req, stocks) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.session;
     const portfolio = yield Portfolio_1.default.findOne({ userId }, { relations: ["stocks"] });
@@ -24,6 +25,12 @@ const addStocksToPortfolio = (req, stocks) => __awaiter(void 0, void 0, void 0, 
     }
     const ownedStocks = stocksArrToMap(portfolio.stocks);
     stocks.forEach((stock) => __awaiter(void 0, void 0, void 0, function* () {
+        yield Transaction_1.default.create({
+            portfolioId: portfolio.id,
+            amount: stock.amount,
+            value: stock.value,
+            symbol: stock.symbol,
+        }).save();
         if (stock.symbol in ownedStocks) {
             ownedStocks[stock.symbol].amount += stock.amount;
             ownedStocks[stock.symbol].value += stock.value;

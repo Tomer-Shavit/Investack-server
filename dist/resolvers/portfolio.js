@@ -38,7 +38,7 @@ let PortfolioResolver = class PortfolioResolver {
         return __awaiter(this, void 0, void 0, function* () {
             const { userId } = req.session;
             const portfolio = yield Portfolio_1.default.findOne({ userId }, {
-                relations: ["stocks", "crypto"],
+                relations: ["stocks", "crypto", "transactions"],
             });
             return portfolio;
         });

@@ -1,6 +1,7 @@
 import { Request } from "express";
 import Stock from "../entities/Stock";
 import Portfolio from "../entities/Portfolio";
+import Transaction from "../entities/Transaction";
 
 export const addStocksToPortfolio = async (req: Request, stocks: Stock[]) => {
   const { userId } = req.session;
@@ -17,6 +18,13 @@ export const addStocksToPortfolio = async (req: Request, stocks: Stock[]) => {
   const ownedStocks = stocksArrToMap(portfolio.stocks);
 
   stocks.forEach(async (stock) => {
+    await Transaction.create({
+      portfolioId: portfolio.id,
+      amount: stock.amount,
+      value: stock.value,
+      symbol: stock.symbol,
+    }).save();
+
     if (stock.symbol in ownedStocks) {
       ownedStocks[stock.symbol].amount += stock.amount;
       ownedStocks[stock.symbol].value += stock.value;

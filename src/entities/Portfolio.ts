@@ -13,6 +13,7 @@ import {
 import User from "./User";
 import Crypto from "./Crypto";
 import Stock from "./Stock";
+import Transaction from "./Transaction";
 
 @Entity()
 @ObjectType()
@@ -35,7 +36,17 @@ class Portfolio extends BaseEntity {
   @OneToMany(() => Crypto, (crypto) => crypto.portfolio, { cascade: true })
   crypto: Crypto[];
 
-  @OneToOne(() => User, (user) => user.portfolio)
+  @Field(() => [Transaction])
+  @Column("simple-array", { default: [] })
+  @OneToMany(
+    () => Transaction,
+    (transaction: Transaction) => transaction.portfolio
+  )
+  transactions: Transaction[];
+
+  @OneToOne(() => User, (user) => user.portfolio, {
+    onDelete: "CASCADE",
+  })
   @Field(() => User)
   @JoinColumn({ name: "userId" })
   user: User;

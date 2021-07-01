@@ -1,4 +1,5 @@
 import { Request } from "express";
+import Transaction from "../entities/Transaction";
 import Crypto from "../entities/Crypto";
 import Portfolio from "../entities/Portfolio";
 
@@ -17,6 +18,13 @@ export const addCryptoToPortfolio = async (req: Request, cryptos: Crypto[]) => {
   const ownedCryptos = cryptoArrToMap(portfolio.crypto);
 
   cryptos.forEach(async (crypto) => {
+    await Transaction.create({
+      portfolioId: portfolio.id,
+      amount: crypto.amount,
+      value: crypto.value,
+      symbol: crypto.symbol,
+    }).save();
+
     if (crypto.symbol in ownedCryptos) {
       ownedCryptos[crypto.symbol].amount += crypto.amount;
       ownedCryptos[crypto.symbol].value += crypto.value;

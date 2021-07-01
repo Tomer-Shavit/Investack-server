@@ -32,7 +32,7 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
-    typeorm_1.OneToOne(() => Portfolio_1.default, (portfolio) => portfolio.user, { cascade: true }),
+    typeorm_1.OneToOne(() => Portfolio_1.default, (portfolio) => portfolio.user),
     type_graphql_1.Field(() => Portfolio_1.default, { nullable: true }),
     __metadata("design:type", Portfolio_1.default)
 ], User.prototype, "portfolio", void 0);

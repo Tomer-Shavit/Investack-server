@@ -41,7 +41,9 @@ __decorate([
     __metadata("design:type", Number)
 ], Stock.prototype, "portfolioId", void 0);
 __decorate([
-    typeorm_1.ManyToOne(() => Portfolio_1.default, (portfolio) => portfolio.stocks),
+    typeorm_1.ManyToOne(() => Portfolio_1.default, (portfolio) => portfolio.stocks, {
+        onDelete: "CASCADE",
+    }),
     typeorm_1.JoinColumn({ name: "portfolioId" }),
     __metadata("design:type", Portfolio_1.default)
 ], Stock.prototype, "portfolio", void 0);

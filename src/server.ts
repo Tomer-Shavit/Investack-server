@@ -16,6 +16,7 @@ import User from "./entities/User";
 import Portfolio from "./entities/Portfolio";
 import Stock from "./entities/Stock";
 import Crypto from "./entities/Crypto";
+import Transaction from "./entities/Transaction";
 
 const main = async () => {
   await createConnection({
@@ -26,7 +27,7 @@ const main = async () => {
     database: "investack",
     synchronize: true,
     logging: !__prod__,
-    entities: [User, Portfolio, Stock, Crypto],
+    entities: [User, Portfolio, Stock, Crypto, Transaction],
     migrations: [path.join(__dirname + "/migrations/*")],
   });
 

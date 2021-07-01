@@ -23,7 +23,7 @@ export class PortfolioResolver {
     const portfolio = await Portfolio.findOne(
       { userId },
       {
-        relations: ["stocks", "crypto"],
+        relations: ["stocks", "crypto", "transactions"],
       }
     );
     return portfolio;

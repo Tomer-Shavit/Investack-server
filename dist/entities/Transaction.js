@@ -15,42 +15,48 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
 const Portfolio_1 = __importDefault(require("./Portfolio"));
-let Crypto = class Crypto extends typeorm_1.BaseEntity {
+let Transaction = class Transaction extends typeorm_1.BaseEntity {
 };
 __decorate([
+    type_graphql_1.Field(),
     typeorm_1.PrimaryGeneratedColumn(),
     __metadata("design:type", Number)
-], Crypto.prototype, "id", void 0);
+], Transaction.prototype, "id", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], Transaction.prototype, "portfolioId", void 0);
 __decorate([
     typeorm_1.Column(),
     type_graphql_1.Field(),
     __metadata("design:type", String)
-], Crypto.prototype, "symbol", void 0);
+], Transaction.prototype, "symbol", void 0);
 __decorate([
     typeorm_1.Column("float"),
     type_graphql_1.Field(),
     __metadata("design:type", Number)
-], Crypto.prototype, "amount", void 0);
+], Transaction.prototype, "value", void 0);
 __decorate([
-    typeorm_1.Column("float"),
-    type_graphql_1.Field(),
-    __metadata("design:type", Number)
-], Crypto.prototype, "value", void 0);
+    typeorm_1.CreateDateColumn(),
+    type_graphql_1.Field(() => String),
+    __metadata("design:type", Date)
+], Transaction.prototype, "createdAt", void 0);
 __decorate([
-    typeorm_1.Column(),
-    __metadata("design:type", Number)
-], Crypto.prototype, "portfolioId", void 0);
-__decorate([
-    typeorm_1.ManyToOne(() => Portfolio_1.default, (portfolio) => portfolio.crypto, {
+    typeorm_1.ManyToOne(() => Portfolio_1.default, (portfolio) => portfolio.transactions, {
         onDelete: "CASCADE",
     }),
     typeorm_1.JoinColumn({ name: "portfolioId" }),
     __metadata("design:type", Portfolio_1.default)
-], Crypto.prototype, "portfolio", void 0);
-Crypto = __decorate([
-    type_graphql_1.ObjectType(),
-    type_graphql_1.InputType("cryptoInput"),
-    typeorm_1.Entity()
-], Crypto);
-exports.default = Crypto;
-//# sourceMappingURL=Crypto.js.map
+], Transaction.prototype, "portfolio", void 0);
+__decorate([
+    typeorm_1.Column("float"),
+    type_graphql_1.Field(),
+    __metadata("design:type", Number)
+], Transaction.prototype, "amount", void 0);
+Transaction = __decorate([
+    typeorm_1.Entity(),
+    type_graphql_1.ObjectType()
+], Transaction);
+exports.default = Transaction;
+//# sourceMappingURL=Transaction.js.map

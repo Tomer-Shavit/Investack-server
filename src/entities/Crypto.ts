@@ -30,7 +30,9 @@ class Crypto extends BaseEntity {
 
   @Column()
   portfolioId: number;
-  @ManyToOne(() => Portfolio, (portfolio: Portfolio) => portfolio.crypto)
+  @ManyToOne(() => Portfolio, (portfolio: Portfolio) => portfolio.crypto, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "portfolioId" })
   portfolio: Portfolio;
 }

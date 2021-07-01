@@ -17,6 +17,7 @@ const typeorm_1 = require("typeorm");
 const User_1 = __importDefault(require("./User"));
 const Crypto_1 = __importDefault(require("./Crypto"));
 const Stock_1 = __importDefault(require("./Stock"));
+const Transaction_1 = __importDefault(require("./Transaction"));
 let Portfolio = class Portfolio extends typeorm_1.BaseEntity {
 };
 __decorate([
@@ -42,7 +43,15 @@ __decorate([
     __metadata("design:type", Array)
 ], Portfolio.prototype, "crypto", void 0);
 __decorate([
-    typeorm_1.OneToOne(() => User_1.default, (user) => user.portfolio),
+    type_graphql_1.Field(() => [Transaction_1.default]),
+    typeorm_1.Column("simple-array", { default: [] }),
+    typeorm_1.OneToMany(() => Transaction_1.default, (transaction) => transaction.portfolio),
+    __metadata("design:type", Array)
+], Portfolio.prototype, "transactions", void 0);
+__decorate([
+    typeorm_1.OneToOne(() => User_1.default, (user) => user.portfolio, {
+        onDelete: "CASCADE",
+    }),
     type_graphql_1.Field(() => User_1.default),
     typeorm_1.JoinColumn({ name: "userId" }),
     __metadata("design:type", User_1.default)

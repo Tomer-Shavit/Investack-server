@@ -24,7 +24,7 @@ class User extends BaseEntity {
   @Column()
   password: string;
 
-  @OneToOne(() => Portfolio, (portfolio) => portfolio.user, { cascade: true })
+  @OneToOne(() => Portfolio, (portfolio) => portfolio.user)
   @Field(() => Portfolio, { nullable: true })
   portfolio: Portfolio;
 
